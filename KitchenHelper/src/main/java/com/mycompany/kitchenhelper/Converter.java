@@ -7,14 +7,23 @@ package com.mycompany.kitchenhelper;
 import java.util.Map;
 
 /**
- *
- * @author Nikol
+ * abstract class Converter
+ * 
  */
-public interface Converter {
+public abstract class Converter<T> {
+    protected Map<String, Double> conversionTable;
     
-    public Map.Entry<String, Double> convertToBaseUnit(String unit, double amount);
+    protected abstract Map.Entry<String, Double> convertToBaseUnit(T object);
 
-    Map.Entry<String, Double> convertToOptimalUnit(String unit, double baseAmount);
+    public abstract Map.Entry<String, Double> convertToOptimalUnit(T object);
 
-    Map.Entry<String, Double> addQuantities(String unit1, double amount1, String unit2, double amount2);
+    public abstract Map<String, Double> addQuantities(T object1, T object2);
+    
+    protected boolean validateUnit(String unit) {
+        if (!conversionTable.containsKey(unit)) {
+            throw new IllegalArgumentException("Unit '" + unit + "' is not in the conversion table.");
+        }
+        return true;
+    }
+
 }

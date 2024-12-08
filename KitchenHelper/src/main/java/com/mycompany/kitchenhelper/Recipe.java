@@ -27,13 +27,19 @@ public class Recipe {
         public void addUtensil(String utensil) {
             utensils.add(utensil);
         }
+       
+        
+        public void addStep(String step) {
+            steps.add(step);
+        }
 
-        public void addTime(int value, String unit) {
-            steps.add("Time: " + value + " " + unit);
+        public void addTime(Time time) {
+            steps.add("Wait for " + time.getValue() + " " + time.getUnit());
         }
 
         @Override
         public String toString() {
             return "Ingredients: " + ingredients + "\nUtensils: " + utensils + "\nSteps: " + steps;
         }
+
 }
