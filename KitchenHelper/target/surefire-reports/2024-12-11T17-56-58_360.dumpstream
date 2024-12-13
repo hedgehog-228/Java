@@ -1,0 +1,5 @@
+# Created at 2024-12-11T17:56:58.550
+Boot Manifest-JAR contains absolute paths in classpath 'S:\projects\Java\KitchenHelper\target\test-classes'
+Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+'other' has different root
+

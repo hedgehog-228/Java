@@ -1,0 +1,9 @@
+com\mycompany\kitchenhelper\KitchenHelper.class
+com\mycompany\kitchenhelper\IngredientConverter.class
+com\mycompany\kitchenhelper\RecipeParser.class
+com\mycompany\kitchenhelper\FileParser.class
+com\mycompany\kitchenhelper\Time.class
+com\mycompany\kitchenhelper\Recipe.class
+com\mycompany\kitchenhelper\Converter.class
+com\mycompany\kitchenhelper\Ingredient.class
+com\mycompany\kitchenhelper\TimeConverter.class
