@@ -23,21 +23,21 @@ public class RecipeParserTest {
 
     @Test
     public void testValidRecipeFile() throws IOException { 
-        // Створюємо тимчасовий файл
+   
         Path validRecipeFile = tempDir.resolve("recipe.cook");
         Files.writeString(validRecipeFile, """
             ertgregsergter
-            @fl1r{200%g}
+            @flour{200%g}
             @sugar{1%g}
             @sugar and brown{100}
                         
-            Mix all ingredients  @milk{1%cup}, #hg, #nikol together.
-            Bake for ~{-%minutes}.
+            Mix all ingredients together. Bake for ~{30%minutes}.
+                                           
+            #plate , #soup , #bowl
                        
        
             """);
 
-        // Перевіряємо парсинг
         Recipe recipe = parser.parse(validRecipeFile.toString());
         
           System.out.println("Utensils:");
@@ -56,8 +56,8 @@ public class RecipeParserTest {
         }
 
 
-        assertEquals(4, recipe.getIngredients().size());
-        assertEquals(2, recipe.getSteps().size());
+        assertEquals(3, recipe.getIngredients().size());
+        assertEquals(3, recipe.getSteps().size());
     }
 
     @Test

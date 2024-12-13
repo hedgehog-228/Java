@@ -14,6 +14,7 @@ import java.util.List;
 public class Recipe {
         private List<Ingredient> ingredients = new ArrayList<>();
         private List<String> utensils = new ArrayList<>();
+        private List<String> time = new ArrayList<>();
         private List<String> steps = new ArrayList<>();
         
         public List<Ingredient> getIngredients() {
@@ -34,7 +35,7 @@ public class Recipe {
         }
 
         public void addTime(Time time) {
-            steps.add("Wait for " + time.getValue() + " " + time.getUnit());
+            this.time.add("Wait for " + time.getValue() + " " + time.getUnit());
         }
 
         public List<String> getSteps() {

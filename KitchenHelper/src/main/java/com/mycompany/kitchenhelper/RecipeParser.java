@@ -34,56 +34,55 @@ public class RecipeParser implements FileParser{
         
         //CREATING OBJECT RECIPE + START READING LINE BY LINE 
         Recipe recipe = new Recipe();
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(source))) { //try to catch IO Exception
-            StringBuilder stepBuilder = new StringBuilder(); // StringBuilder for collecting steps of recipe
-            String line;
-            
-            while ((line = reader.readLine()) != null) { //while file has next line
-                
-                // if line is empty, ending step and adding it
-                if (line.trim().isEmpty()) {
-                    if (stepBuilder.length() > 0) {
-                        recipe.addStep(stepBuilder.toString().trim());
-                        stepBuilder.setLength(0); // cleaning stepBuilder
-                    }
-                    continue;
-                }
-
-                // Checking line for ingredients, utensil or time 
-                if (!parseLine(line, recipe)) {
-                    stepBuilder.append(line).append(" "); // Adding text without information about ingr.,utensil and time to the step
-                }
-            }
-
-            // Final step
-            if (stepBuilder.length() > 0) {
-                recipe.addStep(stepBuilder.toString().trim());
-            }
-        } catch (IOException e) {
-            System.err.println("Error reading file: " + source + " - " + e.getMessage());
-            throw e; // throw again to catch when will call it somewhere else
-        }
         
-        //END OF READING FILE checkinf for at least 1 ingridient in it
-         if (recipe.getIngredients().isEmpty()) {
-            throw new IllegalArgumentException("The recipe must contain at least one ingredient.");
+        try (BufferedReader reader = new BufferedReader(new FileReader(source))) { // try to catch IO Exception
+              StringBuilder stepBuilder = new StringBuilder(); // StringBuilder for collecting steps of recipe
+              String line;
+
+              while ((line = reader.readLine()) != null) { // while file has next line
+                  // if line is empty, ending step and adding it
+                  if (line.trim().isEmpty()) {
+                      if (stepBuilder.length() > 0) {
+                          recipe.addStep(stepBuilder.toString().trim());
+                          stepBuilder.setLength(0); // cleaning stepBuilder
+                      }
+                      continue;
+                  }
+
+                String modifiedLine =  parseLine(line, recipe);
+                stepBuilder.append(modifiedLine).append(" ");
+                  
+                  
+              }
+
+              // Final step
+              if (stepBuilder.length() > 0) {
+                  recipe.addStep(stepBuilder.toString().trim());
+              }
+            } catch (IOException e) {
+                System.err.println("Error reading file: " + source + " - " + e.getMessage());
+                throw e; // throw again to catch when will call it somewhere else
+            }
+
+            // END OF READING FILE, checking for at least 1 ingredient in it
+            if (recipe.getIngredients().isEmpty()) {
+                throw new IllegalArgumentException("The recipe must contain at least one ingredient.");
+            }
+
+            // RESULT
+            return recipe;
         }
-         
-        //RESULT
-        return recipe;
-    }
 
     
     // PARSING OF THE LINE
-    private boolean parseLine(String line, Recipe recipe) {
+    private String parseLine(String line, Recipe recipe) {
         
          // PATTERNS 
         Pattern ingredientPattern = Pattern.compile("@([a-zA-Z]+ [a-zA-Z]+(?: [a-zA-Z]+)*)\\{(\\d+(?:\\.\\d+)?)?(?:%(\\w+))?\\}|@([a-zA-Z]+)(?:\\{(\\d+(?:\\.\\d+)?)(?:%(\\w+))?\\})?"); // group(1) = name of ingredient, proup(2) = quantity, group(3) = unit 
         Pattern utensilPattern = Pattern.compile("#([a-zA-Z]+ [a-zA-Z]+(?: [a-zA-Z]+)*)\\{\\}|#([a-zA-Z]+)"); // two/more words with {} or just word 
         Pattern timePattern = Pattern.compile("(?:~\\{(\\d+(?:\\.\\d+)?)%([a-zA-Z]+)\\})?"); // group(1) = value, group(2) = unit
 
-        boolean matched = false; // --> IF SOMETHING WAS FOUND true
+        StringBuilder modifiedLine = new StringBuilder(line); // Create a modifiable line copy
 
          // INGREDIENTS
         Matcher ingredientMatcher = ingredientPattern.matcher(line);
@@ -124,16 +123,25 @@ public class RecipeParser implements FileParser{
             }
              
             recipe.addIngredient(new Ingredient(name, quantity, unit)); // creating + adding new ingredient
-            matched = true; // was found
+            
+            // Replace in line
+            String replacement = String.format("%s (%.1f, %s)", name, quantity, unit);
+            modifiedLine.replace(ingredientMatcher.start(), ingredientMatcher.end(), replacement);
          }
 
          // UTENSILS
          Matcher utensilMatcher = utensilPattern.matcher(line); 
          
          while (utensilMatcher.find()) {
-             String utensilName = utensilMatcher.group(1) != null ? utensilMatcher.group(1):utensilMatcher.group(2);
-             recipe.addUtensil(utensilName);
-             matched = true; // was found
+            String utensilName = utensilMatcher.group(1) != null ? utensilMatcher.group(1):utensilMatcher.group(2);
+            recipe.addUtensil(utensilName);
+             
+            // Replace in line
+            String replacement = utensilName;
+            modifiedLine.replace(utensilMatcher.start(), utensilMatcher.end(), replacement);
+
+            // update Matcher
+            utensilMatcher = utensilPattern.matcher(modifiedLine);
          }
 
          // TIME
@@ -144,12 +152,17 @@ public class RecipeParser implements FileParser{
                 double timeValue = Double.parseDouble(timeMatcher.group(1));
                 String timeUnit = timeMatcher.group(2);
                 recipe.addTime(new Time(timeValue, timeUnit));
-                matched = true;
+                
+                // Replace in line
+                String replacement = String.format("%s %s", timeValue, timeUnit);
+                modifiedLine.replace(timeMatcher.start(), timeMatcher.end(), replacement);
                 }
 
          }
-
-         return matched;
+         
+        // Update the line with replacements
+        line = modifiedLine.toString();
+        return line;
      }
 
     
