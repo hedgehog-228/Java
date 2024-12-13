@@ -4,6 +4,7 @@
  */
 package com.mycompany.kitchenhelper;
 
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +16,7 @@ public class IngredientConverter extends Converter<Ingredient>{
     
     //make constructor for initialization after creating an object IngredientConverter
     public IngredientConverter() {
-        conversionTable = new HashMap<>();
+        this.conversionTable = new HashMap<>();
         conversionTable.put("kg", 1000.0); // 1 kg = 1000 g
         conversionTable.put("g", 1.0);
         conversionTable.put("l", 1000.0); // 1 l = 1000 ml
@@ -61,12 +62,12 @@ public class IngredientConverter extends Converter<Ingredient>{
     }
 //CHECK IF INGREDIENTS HAVE THE SAME NAME
     @Override
-    public Map<String, Double> addQuantities(Ingredient ingredient1, Ingredient ingredient2) {
+    public Map<String, Double> addQuantities(Ingredient ingredient1, Ingredient ingredient2){
         Map<String, Double> result = new HashMap<>();
         String unit1 = ingredient1.getUnit();
         String unit2 = ingredient2.getUnit();
         
-        if(!ingredient2.getName().equals(ingredient1.getName())){
+        if(!ingredient2.getName().equalsIgnoreCase(ingredient1.getName())){
             throw new IllegalArgumentException("It is not allowed to add quantities of two different ingredients");
         }
          try {
@@ -80,7 +81,7 @@ public class IngredientConverter extends Converter<Ingredient>{
         String baseUnit1 = base1.getKey();
         String baseUnit2 = base2.getKey();
 
-        if (!baseUnit1.equals(baseUnit2)) {
+        if (!baseUnit1.equalsIgnoreCase(baseUnit2)) {
             System.out.println("Incompatible units of measurement: " + unit1 + " and " + unit2); //if units are different and valid (in the table) 
             return Map.of();
         }

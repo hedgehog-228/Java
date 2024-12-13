@@ -36,8 +36,12 @@ public class Ingredient {
     
     
     
-     @Override
+@Override
     public String toString() {
-        return name + " " + quantity + " " + unit;
+        if (quantity % 1 == 0) {
+            return String.format("%d %s", (int) quantity, unit);
+        } else {
+            return String.format("%.2f %s", quantity, unit);
+        }
     }
 }

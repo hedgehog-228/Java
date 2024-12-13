@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  *
- * @author Nikol
+ * class just for my part
  */
 public class Recipe {
         private List<Ingredient> ingredients = new ArrayList<>();
@@ -36,6 +36,16 @@ public class Recipe {
         public void addTime(Time time) {
             steps.add("Wait for " + time.getValue() + " " + time.getUnit());
         }
+
+        public List<String> getSteps() {
+            return steps;
+        }
+
+        public List<String> getUtensils() {
+            return utensils;
+        }
+        
+        
 
         @Override
         public String toString() {

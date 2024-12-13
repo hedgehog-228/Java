@@ -12,13 +12,15 @@ import java.util.Map;
  * @author Nikol
  */
 public class TimeConverter extends Converter<Time> {
+    
     public TimeConverter() {
+        this.conversionTable = new HashMap<>();
         conversionTable.put("seconds", 1.0 / 60);  // 1 sec = 1/60 minute
         conversionTable.put("minutes", 1.0);       // 1 minute
         conversionTable.put("hours", 60.0);        // 1 hour = 60 minutes
     }
      
-    private String normalizeUnit(String unit) {
+    protected String normalizeUnit(String unit) {
         return switch (unit.toLowerCase()) {
             case "second" -> "seconds";
             case "minute" -> "minutes";
@@ -44,8 +46,7 @@ public class TimeConverter extends Converter<Time> {
 
     @Override
     public Map.Entry<String, Double> convertToOptimalUnit(Time time) {
-        Map.Entry<String, Double> normalizedTime = convertToBaseUnit(time);
-        double amount = normalizedTime.getValue();
+        double amount = convertToBaseUnit(time).getValue();
 
      
         if (amount >= 60) {
