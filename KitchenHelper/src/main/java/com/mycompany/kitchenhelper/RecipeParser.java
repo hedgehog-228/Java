@@ -78,8 +78,8 @@ public class RecipeParser implements FileParser{
     private String parseLine(String line, Recipe recipe) {
         
          // PATTERNS 
-        Pattern ingredientPattern = Pattern.compile("@([a-zA-Z]+ [a-zA-Z]+(?: [a-zA-Z]+)*)\\{(\\d+(?:\\.\\d+)?)?(?:%(\\w+))?\\}|@([a-zA-Z]+)(?:\\{(\\d+(?:\\.\\d+)?)(?:%(\\w+))?\\})?"); // group(1) = name of ingredient, proup(2) = quantity, group(3) = unit 
-        Pattern utensilPattern = Pattern.compile("#([a-zA-Z]+ [a-zA-Z]+(?: [a-zA-Z]+)*)\\{\\}|#([a-zA-Z]+)"); // two/more words with {} or just word 
+        Pattern ingredientPattern = Pattern.compile("@([a-zA-Z\u0370-\u03FF]+ [a-zA-Z\u0370-\u03FF]+(?: [a-zA-Z\u0370-\u03FF]+)*)\\{(\\d+(?:\\.\\d+)?)?(?:%(\\w+))?\\}|@([a-zA-Z\u0370-\u03FF]+)(?:\\{(\\d+(?:\\.\\d+)?)(?:%(\\w+))?\\})?"); // group(1) = name of ingredient, proup(2) = quantity, group(3) = unit 
+        Pattern utensilPattern = Pattern.compile("#([a-zA-Z\u0370-\u03FF]+ [a-zA-Z\u0370-\u03FF]+(?: [a-zA-Z\u0370-\u03FF]+)*)\\{\\}|#([a-zA-Z\u0370-\u03FF]+)"); // two/more words with {} or just word 
         Pattern timePattern = Pattern.compile("(?:~\\{(\\d+(?:\\.\\d+)?)%([a-zA-Z]+)\\})?"); // group(1) = value, group(2) = unit
 
         StringBuilder modifiedLine = new StringBuilder(line); // Create a modifiable line copy

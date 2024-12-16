@@ -26,15 +26,21 @@ public class RecipeParserTest {
    
         Path validRecipeFile = tempDir.resolve("recipe.cook");
         Files.writeString(validRecipeFile, """
-            ertgregsergter
-            @flour{200%g}
-            @sugar{1%g}
-            @sugar and brown{100}
-                        
-            Mix all ingredients together. Bake for ~{30%minutes}.
-                                           
-            #plate , #soup , #bowl
+            Σπάστε τα @αυγά{3} σε ένα #μπλέντερ, στη συνέχεια προσθέστε το @αλεύρι{125%gr},το @γάλα{250%ml} και @αλάτι θαλασσινό{1%πρέζα}, και χτυπήστε μέχρι να γίνει λείο.
+            
+            Ρίξτε το σε ένα #μπολ και αφήστε το να σταθεί για ~{15%minutes}.
+            
+            Λιώστε το @βούτυρο σε ένα #μεγάλο αντικολλητικό τηγάνι{} σε μέτρια φωτιά,
+            και γείρετε το τηγάνι ώστε να καλυφθεί η επιφάνεια με το βούτυρο.
                        
+            Ρίξτε μία κουτάλα από το μείγμα και γείρετε πάλι το τηγάνι ώστε το μείγμα
+            να απλωθεί σε όλη τη βάση, και μαγειρέψτε για ~{2%minutes},
+            ή μέχρι να αρχίσει να ξεκολλάει από τα πλάγια.
+                       
+            Μόλις χρυσίσει από κάτω, γυρίστε την κρέπα και μαγειρέψτε για ~{1%minutes},
+            ή μέχρι να ψηθεί καλά.
+            
+            Σερβίρετε αμέσως με την αγαπημένη σας επικάλυψη.
        
             """);
 
@@ -56,8 +62,8 @@ public class RecipeParserTest {
         }
 
 
-        assertEquals(3, recipe.getIngredients().size());
-        assertEquals(3, recipe.getSteps().size());
+        assertEquals(5, recipe.getIngredients().size());
+        assertEquals(6, recipe.getSteps().size());
     }
 
     @Test

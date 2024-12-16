@@ -18,12 +18,12 @@ public class IngredientConverter extends Converter<Ingredient>{
     public IngredientConverter() {
         this.conversionTable = new HashMap<>();
         conversionTable.put("kg", 1000.0); // 1 kg = 1000 g
-        conversionTable.put("g", 1.0);
+        conversionTable.put("gr", 1.0);
         conversionTable.put("l", 1000.0); // 1 l = 1000 ml
         conversionTable.put("ml", 1.0);
     }
     
-    //convert unit to base (g, ml)
+    //convert unit to base (gr, ml)
     @Override
     protected Map.Entry<String, Double> convertToBaseUnit(Ingredient ingredient) {
         String unit = ingredient.getUnit();
@@ -37,7 +37,7 @@ public class IngredientConverter extends Converter<Ingredient>{
            return Map.entry(unit, quantity);//glass/cup or something else
         }
 
-        String baseUnit = unit.equals("g") || unit.equals("kg") ? "g" : "ml"; //declearing base unit
+        String baseUnit = unit.equals("gr") || unit.equals("kg") ? "gr" : "ml"; //declearing base unit
         double baseAmount = quantity * conversionTable.get(unit); //calculation of amount
 
         return Map.entry(baseUnit, baseAmount);
@@ -51,7 +51,7 @@ public class IngredientConverter extends Converter<Ingredient>{
         String unit = ingredient.getUnit();
         double baseQuantity = ingredient.getQuantity();
         
-        if (unit.equals("g") && baseQuantity >= 1000) { //if for example 2000g --> change to 2kg for easier understanding 
+        if (unit.equals("gr") && baseQuantity >= 1000) { //if for example 2000gr --> change to 2kg for easier understanding 
             return Map.entry("kg", baseQuantity / 1000.0);
         } else if (unit.equals("ml") && baseQuantity >= 1000) {
             return Map.entry("l", baseQuantity / 1000.0);//if for example 2000ml --> change to 2l for easier understanding 
