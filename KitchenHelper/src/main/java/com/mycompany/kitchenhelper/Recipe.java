@@ -14,19 +14,34 @@ import java.util.List;
 public class Recipe {
         private List<Ingredient> ingredients = new ArrayList<>();
         private List<String> utensils = new ArrayList<>();
-        private List<String> time = new ArrayList<>();
-        private List<String> steps = new ArrayList<>();
+        private List<Time> time = new ArrayList<>();
+        private List<String> steps = new ArrayList<>();       
+        
+        public Recipe() {
+
+        }
+
+        public Recipe(List<Ingredient> ingredients, List<String> utensils, List<String> steps, List<Time> time) { //for tests
+            if (ingredients != null) this.ingredients = new ArrayList<>(ingredients);
+            if (utensils != null) this.utensils = new ArrayList<>(utensils);
+            if (steps != null) this.steps = new ArrayList<>(steps);
+            if (time != null) this.time = new ArrayList<>(time);
+        }
         
         public List<Ingredient> getIngredients() {
         return ingredients;
         }
         
         public void addIngredient(Ingredient ingredient) {
-        ingredients.add(ingredient);
+            if(!ingredients.contains(ingredient)){
+            ingredients.add(ingredient);
+            }
         }
 
         public void addUtensil(String utensil) {
+            if(!utensils.contains(utensil)){
             utensils.add(utensil);
+            } 
         }
        
         
@@ -35,7 +50,11 @@ public class Recipe {
         }
 
         public void addTime(Time time) {
-            this.time.add("Wait for " + time.getValue() + " " + time.getUnit());
+            this.time.add(time);
+        }
+
+        public List<Time> getTime() {
+            return time;
         }
 
         public List<String> getSteps() {

@@ -75,14 +75,109 @@ public class RecipeParser implements FileParser{
 
     
     // PARSING OF THE LINE
+    
+    private String parseLine(String line, Recipe recipe) {
+        // INGREDIENTS
+        String ingredientProcessed = processIngredients(line, recipe);
+
+        // UTENSILS
+        String utensilProcessed = processUtensils(ingredientProcessed, recipe);
+
+        // TIME
+        String timeProcessed = processTime(utensilProcessed, recipe);
+
+        return timeProcessed;
+    }
+      
+    // INGREDIENTS
+    private String processIngredients(String line, Recipe recipe) {
+        Pattern ingredientPattern = Pattern.compile("@([a-zA-Z\u0370-\u03FF]+ [a-zA-Z\u0370-\u03FF]+(?: [a-zA-Z\u0370-\u03FF]+)*)\\{(\\d+(?:\\.\\d+)?)?(?:%([a-zA-Z\u0370-\u03FF]+))?\\}|@([a-zA-Z\u0370-\u03FF]+)(?:\\{(\\d+(?:\\.\\d+)?)(?:%([a-zA-Z\u0370-\u03FF]+))?\\})?"); // group(1) = name of ingredient, proup(2) = quantity, group(3) = unit 
+        Matcher matcher = ingredientPattern.matcher(line);
+        StringBuffer result = new StringBuffer();
+
+       while (matcher.find()) {
+             
+            String name = matcher.group(1) != null ? matcher.group(1) : matcher.group(4);
+            
+            if (name == null) {
+                System.err.println("Invalid ingredient name: " + name + ". Ingredient names cannot contain numbers. Please check your recipe.");
+                continue; // skip to the next match
+            }
+            
+            //CHECK
+          
+            double quantity = 1.0; // default value
+            try {
+                if (matcher.group(2) != null) { // if matcher found quantity in group 2 --> parse value and set it to 'quantity' 
+                    quantity = Double.parseDouble(matcher.group(2));
+                } else if (matcher.group(5) != null) {
+                    quantity = Double.parseDouble(matcher.group(5)); // if matcher found quantity in group 5--> parse value and set it to 'quantity' 
+                }
+            } catch (NumberFormatException e) {  // parseDouble has exception! 
+                System.err.println("Invalid quantity format in ingredient: " + (matcher.group(2) != null ? matcher.group(2) : matcher.group(5)) + "The quantity will be set to default. Please check your recipe!");          
+            }
+
+            String unit;
+     
+            if (matcher.group(3) != null) { // if matcher found unit in group 3 --> parse value and set it to 'quantity' 
+                    unit = matcher.group(3);
+            } else if (matcher.group(6) != null) {// if matcher found unit in group 6 --> parse value and set it to 'quantity' 
+                    unit = matcher.group(6);
+            } else {
+                    unit = quantity > 1 ? "pieces" : "piece"; // depend on quantity choose correct format
+            }
+             
+            recipe.addIngredient(new Ingredient(name, quantity, unit)); // creating + adding new ingredient
+            matcher.appendReplacement(result, String.format("%s (%.1f %s)", name, quantity, unit));
+        }
+        matcher.appendTail(result);
+        return result.toString();
+    }
+
+    //
+    private String processUtensils(String line, Recipe recipe) {
+        Pattern utensilPattern = Pattern.compile("#([a-zA-Z\u0370-\u03FF]+ [a-zA-Z\u0370-\u03FF]+(?: [a-zA-Z\u0370-\u03FF]+)*)\\{\\}|#([a-zA-Z\u0370-\u03FF]+)"); // two/more words with {} or just word 
+        Matcher matcher = utensilPattern.matcher(line);
+        StringBuffer result = new StringBuffer();
+
+        while (matcher.find()) {
+            String utensilName = matcher.group(1) != null ? matcher.group(1):matcher.group(2);
+            
+            if (utensilName != null) { // Add only if not already in recipe
+                recipe.addUtensil(utensilName);
+            }
+            matcher.appendReplacement(result, utensilName);
+        }
+        matcher.appendTail(result);
+        return result.toString();
+    }
+
+    //
+    private String processTime(String line, Recipe recipe) {
+        Pattern timePattern = Pattern.compile("(?:~\\{(\\d+(?:\\.\\d+)?)%([a-zA-Z]+)\\})?"); // group(1) = value, group(2) = unit
+        Matcher matcher = timePattern.matcher(line);
+        StringBuffer result = new StringBuffer();
+
+        while (matcher.find()) {
+            if (matcher.group(1) != null && matcher.group(2) != null) {
+                double timeValue = Double.parseDouble(matcher.group(1));
+                String timeUnit = matcher.group(2);
+                recipe.addTime(new Time(timeValue, timeUnit));
+            matcher.appendReplacement(result, String.format("%.1f %s", timeValue, timeUnit)); 
+            }
+        }
+        matcher.appendTail(result);
+        return result.toString();
+    }
+      /*
     private String parseLine(String line, Recipe recipe) {
         
          // PATTERNS 
         Pattern ingredientPattern = Pattern.compile("@([a-zA-Z\u0370-\u03FF]+ [a-zA-Z\u0370-\u03FF]+(?: [a-zA-Z\u0370-\u03FF]+)*)\\{(\\d+(?:\\.\\d+)?)?(?:%(\\w+))?\\}|@([a-zA-Z\u0370-\u03FF]+)(?:\\{(\\d+(?:\\.\\d+)?)(?:%(\\w+))?\\})?"); // group(1) = name of ingredient, proup(2) = quantity, group(3) = unit 
         Pattern utensilPattern = Pattern.compile("#([a-zA-Z\u0370-\u03FF]+ [a-zA-Z\u0370-\u03FF]+(?: [a-zA-Z\u0370-\u03FF]+)*)\\{\\}|#([a-zA-Z\u0370-\u03FF]+)"); // two/more words with {} or just word 
         Pattern timePattern = Pattern.compile("(?:~\\{(\\d+(?:\\.\\d+)?)%([a-zA-Z]+)\\})?"); // group(1) = value, group(2) = unit
-
-        StringBuilder modifiedLine = new StringBuilder(line); // Create a modifiable line copy
+        
+        StringBuilder modifiedLine = new StringBuilder(line);
 
          // INGREDIENTS
         Matcher ingredientMatcher = ingredientPattern.matcher(line);
@@ -99,7 +194,7 @@ public class RecipeParser implements FileParser{
             //CHECK 
           /*  double quantity = ingredientMatcher.group(2) != null ? Double.parseDouble(ingredientMatcher.group(2)): (ingredientMatcher.group(5) != null ? Double.parseDouble(ingredientMatcher.group(5)): 1.0 ); // ToDouble
             
-            String unit = ingredientMatcher.group(3) != null ? ingredientMatcher.group(3) : (ingredientMatcher.group(6)!= null ? ingredientMatcher.group(6): (quantity > 1 ? "peaces" : "peace")); // unit is optional (may be or not)*/
+            String unit = ingredientMatcher.group(3) != null ? ingredientMatcher.group(3) : (ingredientMatcher.group(6)!= null ? ingredientMatcher.group(6): (quantity > 1 ? "peaces" : "peace")); // unit is optional (may be or not)
           
             double quantity = 1.0; // default value
             try {
@@ -124,46 +219,57 @@ public class RecipeParser implements FileParser{
              
             recipe.addIngredient(new Ingredient(name, quantity, unit)); // creating + adding new ingredient
             
-            // Replace in line
-            String replacement = String.format("%s (%.1f, %s)", name, quantity, unit);
-            modifiedLine.replace(ingredientMatcher.start(), ingredientMatcher.end(), replacement);
+            
+            // Replace ingredient in line
+            String replacement = String.format("%s (%.1f %s)", name, quantity, unit);
+            
+            int start = ingredientMatcher.start();
+            int end = ingredientMatcher.end();
+            
+            modifiedLine.replace(start, end, replacement);
+            ingredientMatcher = ingredientPattern.matcher(modifiedLine.toString());
          }
 
-         // UTENSILS
-         Matcher utensilMatcher = utensilPattern.matcher(line); 
+        // UTENSILS
+        Matcher utensilMatcher = utensilPattern.matcher(line); 
          
-         while (utensilMatcher.find()) {
+        while (utensilMatcher.find()) {
             String utensilName = utensilMatcher.group(1) != null ? utensilMatcher.group(1):utensilMatcher.group(2);
+            
+            if (utensilName != null) { // Add only if not already in set
             recipe.addUtensil(utensilName);
+            }
              
-            // Replace in line
+             // Replace utensil in line
             String replacement = utensilName;
-            modifiedLine.replace(utensilMatcher.start(), utensilMatcher.end(), replacement);
-
-            // update Matcher
-            utensilMatcher = utensilPattern.matcher(modifiedLine);
+            
+            int start = utensilMatcher.start();
+            int end = utensilMatcher.end();
+            
+            modifiedLine.replace(start, end, replacement);
+            utensilMatcher = utensilPattern.matcher(modifiedLine.toString());
          }
 
-         // TIME
-         Matcher timeMatcher = timePattern.matcher(line);
+        // TIME
+        Matcher timeMatcher = timePattern.matcher(line);
          
-         while (timeMatcher.find()) {
+        while (timeMatcher.find()) {
             if (timeMatcher.group(1) != null && timeMatcher.group(2) != null) {
                 double timeValue = Double.parseDouble(timeMatcher.group(1));
                 String timeUnit = timeMatcher.group(2);
                 recipe.addTime(new Time(timeValue, timeUnit));
                 
-                // Replace in line
+                // Replace time in line
                 String replacement = String.format("%s %s", timeValue, timeUnit);
-                modifiedLine.replace(timeMatcher.start(), timeMatcher.end(), replacement);
-                }
-
+                int start = timeMatcher.start();
+                int end = timeMatcher.end();
+                modifiedLine.replace(start, end, replacement);
+                timeMatcher = timePattern.matcher(modifiedLine.toString());
+            }
          }
          
-        // Update the line with replacements
-        line = modifiedLine.toString();
-        return line;
-     }
+        return modifiedLine.toString();
+     }*/
 
     
 }
