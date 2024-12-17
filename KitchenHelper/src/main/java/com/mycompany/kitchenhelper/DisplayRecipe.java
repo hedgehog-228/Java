@@ -71,11 +71,11 @@ public class DisplayRecipe {
 
         System.out.println("Υλικα:");
         for (Ingredient ingredient : scaledIngredients) {
-             System.out.printf("- %s: %.1f %s %n", ingredient.getName(), ingredient.getQuantity(), ingredient.getUnit());
+             System.out.printf("- %s: %.1f %s %n", ingredient.getName(), ingredient.getQuantity(), "pieces".equals(ingredient.getUnit()) || "piece".equals(ingredient.getUnit()) ? "" : ingredient.getUnit());
         }
         
         
-        for (Time stepTime : recipe.getTime()) { // Припускаємо, що метод getStepTimes() повертає час для кожного кроку
+        for (Time stepTime : recipe.getTime()) { 
         totalTime = timeConverter.addQuantities(totalTime, stepTime)
                                 .entrySet()
                                 .stream()

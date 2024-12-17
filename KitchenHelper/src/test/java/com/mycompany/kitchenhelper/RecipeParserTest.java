@@ -53,7 +53,7 @@ public class RecipeParserTest {
 
          System.out.println("Ingredients:");
         for (Ingredient ingredient : recipe.getIngredients()) {
-            System.out.printf("- %s: %.1f %s %n", ingredient.getName(), ingredient.getQuantity(), ingredient.getUnit());
+            System.out.printf("- %s: %.1f %s %n", ingredient.getName(), ingredient.getQuantity(), "pieces".equals(ingredient.getUnit()) || "piece".equals(ingredient.getUnit()) ? "" : ingredient.getUnit());
         }
          System.out.println("\nSteps:");
         int stepIndex = 1;

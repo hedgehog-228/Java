@@ -105,6 +105,17 @@ public class IngredientConverterTest {
         assertEquals(500.0, result.get("gr")); 
         assertEquals(1.0, result.get("cup"));
     }
+    
+    @Test
+    public void testAddQuantitiesCompatibleUnitsInvalidUnit() {
+        Ingredient ingredient1 = new Ingredient("Sugar", 500, "cup");
+        Ingredient ingredient2 = new Ingredient("Sugar", 1, "cup");
+
+        Map<String, Double> result = ingredientConverter.addQuantities(ingredient1, ingredient2);
+        System.out.println(result);
+        assertTrue(result.containsKey("cup"));
+        assertEquals(501.0, result.get("cup"));
+    }
 
     @Test
     public void testAddQuantitiesDifferentIngredients() {

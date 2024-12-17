@@ -26,6 +26,14 @@ public class Ingredient {
         return name;
     }
 
+    public void setQuantity(double quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
     public double getQuantity() {
         return quantity;
     }

@@ -108,13 +108,13 @@ public class IngredientConverter extends Converter<Ingredient>{
          } catch (IllegalArgumentException e){
              
                 // if units are not declared but the same then 
-                if (!unit1.equalsIgnoreCase(unit2)) {
-                     double totalAmount = ingredient1.getQuantity() + ingredient2.getQuantity();
+                if (unit1.equalsIgnoreCase(unit2)) {
+                    double totalAmount = ingredient1.getQuantity() + ingredient2.getQuantity();
                     result.put(unit1, totalAmount);
-               }
-                
+               } else {
                 result.put(unit1, ingredient1.getQuantity());
                 result.put(unit2, ingredient2.getQuantity());
+                }
                 return result;
          }
     }

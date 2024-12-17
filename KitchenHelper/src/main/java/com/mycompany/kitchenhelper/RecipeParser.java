@@ -128,13 +128,13 @@ public class RecipeParser implements FileParser{
             }
              
             recipe.addIngredient(new Ingredient(name, quantity, unit)); // creating + adding new ingredient
-            matcher.appendReplacement(result, String.format("%s (%.1f %s)", name, quantity, unit));
+            matcher.appendReplacement(result, String.format("%s (%.1f %s)", name, quantity, "pieces".equals(unit) || "piece".equals(unit) ? "" : unit));
         }
         matcher.appendTail(result);
         return result.toString();
     }
 
-    //
+    //UTENSIL
     private String processUtensils(String line, Recipe recipe) {
         Pattern utensilPattern = Pattern.compile("#([a-zA-Z\u0370-\u03FF]+ [a-zA-Z\u0370-\u03FF]+(?: [a-zA-Z\u0370-\u03FF]+)*)\\{\\}|#([a-zA-Z\u0370-\u03FF]+)"); // two/more words with {} or just word 
         Matcher matcher = utensilPattern.matcher(line);
@@ -152,7 +152,7 @@ public class RecipeParser implements FileParser{
         return result.toString();
     }
 
-    //
+    //TIME
     private String processTime(String line, Recipe recipe) {
         Pattern timePattern = Pattern.compile("(?:~\\{(\\d+(?:\\.\\d+)?)%([a-zA-Z]+)\\})?"); // group(1) = value, group(2) = unit
         Matcher matcher = timePattern.matcher(line);
