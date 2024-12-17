@@ -28,7 +28,7 @@ public class DisplayRecipe {
     // SCALE AND COMBINE INGREDIENTS
     public List<Ingredient> scaleAndCombineIngredients(List<Ingredient> ingredients, int people) {
         IngredientConverter converter = new IngredientConverter();
-        Map<String, Ingredient> combinedIngredients = new HashMap<>(); // map for processed recipe data ( adding same ingredients, scale and e.t.c.) 
+        Map<String, List<Ingredient>> combinedIngredients = new HashMap<>(); // map for processed recipe data ( adding same ingredients, scale and e.t.c.) 
         
         //START LOOP INGREDIENTS
         for (Ingredient ingredient : ingredients) {
@@ -41,22 +41,48 @@ public class DisplayRecipe {
 
             // if ingredients is exist in the map combinedIngredients then adding quantities 
             if (combinedIngredients.containsKey(scaledIngredient.getName().toLowerCase())) {
-                Ingredient existingIngredient = combinedIngredients.get(scaledIngredient.getName().toLowerCase()); // take existing ingredient from combinedIngredients
-                Map<String, Double> combinedQuantities = converter.addQuantities(existingIngredient, scaledIngredient);
+                List<Ingredient> ingredientList = combinedIngredients.get(scaledIngredient.getName().toLowerCase());
+                boolean added = false;
+              //  Ingredient existingIngredient = combinedIngredients.get(scaledIngredient.getName().toLowerCase()); // take existing ingredient from combinedIngredients
+              
+                for (int i = 0; i < ingredientList.size(); i++) {
+                    Ingredient existingIngredient = ingredientList.get(i);
 
-                // Updating data after addition
-                for (Map.Entry<String, Double> entry : combinedQuantities.entrySet()) {
-                    combinedIngredients.put(scaledIngredient.getName().toLowerCase(),
-                            new Ingredient(scaledIngredient.getName(), entry.getValue(), entry.getKey()));
+                    // try to combine
+                    Map<String, Double> combinedQuantities = converter.addQuantities(existingIngredient, scaledIngredient);
+
+                    if (combinedQuantities.size() == 1) { // if able to combine 
+                        for (Map.Entry<String, Double> entry : combinedQuantities.entrySet()) {
+                            
+                    // Updating data after addition
+                            ingredientList.set(i, new Ingredient(
+                                    scaledIngredient.getName(),
+                                    entry.getValue(),
+                                    entry.getKey()
+                            ));
+                        }
+                        added = true;
+                        break;
+                    }
+                }
+
+                if (!added) { // if combining failed -> just add to the list 
+                    ingredientList.add(scaledIngredient);
                 }
             } else {
-                // new ingridient to map 
-                combinedIngredients.put(scaledIngredient.getName().toLowerCase(), scaledIngredient);
+                // new ingredient in the group
+                List<Ingredient> newList = new ArrayList<>();
+                newList.add(scaledIngredient);
+                combinedIngredients.put(scaledIngredient.getName().toLowerCase(), newList);
             }
         }
 
         // MAP BACK TO LIST OF INGREDIENTS 
-        return new ArrayList<>(combinedIngredients.values());
+        List<Ingredient> flattenedIngredients = new ArrayList<>();
+        for (List<Ingredient> ingredientList : combinedIngredients.values()) {
+            flattenedIngredients.addAll(ingredientList);
+        }
+        return flattenedIngredients;
     }
 
     // PRINT SCALED RECIPE
