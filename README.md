@@ -14,7 +14,7 @@
 
   * Εάν θέλετε να μαγειρέψετε για ένα άτομο μπορείτε να τρέξετε την εντολή:  
     &emsp;java -jar target/KitchenHelper-1.0-SNAPSHOT.jar <recipe.cook>  
-        &emsp;&emsp;όπου recipe.cook η συνταγή της επιλογής σας)  
+        &emsp;&emsp;όπου recipe.cook η συνταγή της επιλογής σας  
 
   * Εάν θέλετε να μαγειρέψετε για περισσότερα άτομα μπορείτε να τρέξετε την εντολή:  
     &emsp;java -jar target/KitchenHelper-1.0-SNAPSHOT.jar <recipe.cook> <-people> <#ofPeople>  
