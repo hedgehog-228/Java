@@ -14,21 +14,21 @@
 
   * Εάν θέλετε να μαγειρέψετε για ένα άτομο μπορείτε να τρέξετε την εντολή:  
     &emsp;java -jar target/KitchenHelper-1.0-SNAPSHOT.jar <recipe.cook>  
-        &emsp;όπου recipe.cook η συνταγή της επιλογής σας)  
+        &emsp;&emsp;όπου recipe.cook η συνταγή της επιλογής σας)  
 
   * Εάν θέλετε να μαγειρέψετε για περισσότερα άτομα μπορείτε να τρέξετε την εντολή:  
     &emsp;java -jar target/KitchenHelper-1.0-SNAPSHOT.jar <recipe.cook> <-people> <#ofPeople>  
-        &emsp;όπου recipe.cook η συνταγή της επιλογής σας  
-            &emsp;-people όρισμα για την επιλογή περισσότερων ατόμων  
-            &emsp;#ofPeople το πλήθος των ατόμων για τα οποία επιθυμείτε να μαγειρέψετε  
+        &emsp;&emsp;όπου recipe.cook η συνταγή της επιλογής σας  
+            &emsp;&emsp;&emsp;-people όρισμα για την επιλογή περισσότερων ατόμων  
+            &emsp;&emsp;&emsp;#ofPeople το πλήθος των ατόμων για τα οποία επιθυμείτε να μαγειρέψετε  
 
 
 * 2η Λειτουργία (Εμφάνιση λίστας αγορών)  
 
   * Για να δείτε τη λίστα αγορών μπορείτε να τρέξετε την ακόλουθη εντολή:  
     &emsp;java -jar target/KitchenHelper-1.0-SNAPSHOT.jar <-list> <recipe1.cook> <recipe2.cook> ...  
-        &emsp;όπου -list όρισμα για την εμφάνιση λίστας αγοράς  
-            &emsp;recipe1.cook recipe2.cook ... μεταβλητό πλήθος ορισμάτων (μπορείτε να βάλετε όσα αρχεία συνταγών θέλετε (ελάχιστο 1))  
+        &emsp;&emsp;όπου -list όρισμα για την εμφάνιση λίστας αγοράς  
+            &emsp;&emsp;recipe1.cook recipe2.cook ... μεταβλητό πλήθος ορισμάτων (μπορείτε να βάλετε όσα αρχεία συνταγών θέλετε (ελάχιστο 1))  
 
 
 
