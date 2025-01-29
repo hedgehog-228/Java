@@ -1,4 +1,7 @@
-
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package com.mycompany.kitchenhelper;
 
 import java.util.ArrayList;
@@ -6,7 +9,7 @@ import java.util.List;
 
 /**
  *
- * Recipe class 
+ * class just for my part
  */
 public class Recipe {
         private List<Ingredient> ingredients = new ArrayList<>();
@@ -62,12 +65,7 @@ public class Recipe {
             return utensils;
         }
         
-        public Time getTimeForStep(int stepIndex) {
-        if (stepIndex < time.size() && time.get(stepIndex) != null) {
-            return time.get(stepIndex);
-        }
-        return null; 
-    }
+        
 
         @Override
         public String toString() {

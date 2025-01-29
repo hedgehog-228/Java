@@ -1,4 +1,7 @@
-
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package com.mycompany.kitchenhelper;
 
 import java.util.HashMap;
@@ -6,7 +9,7 @@ import java.util.Map;
 
 /**
  *
- * class for converting time 
+ * @author Nikol
  */
 public class TimeConverter extends Converter<Time> {
     
@@ -70,10 +73,5 @@ public class TimeConverter extends Converter<Time> {
         result.put(temp.getKey(), temp.getValue());
         return result;
         
-    }
-    
-    public long convertToSeconds(Time time) {
-        double minutes = convertToBaseUnit(time).getValue();
-        return Math.round(minutes * 60); // Convert minutes to seconds
     }
 }

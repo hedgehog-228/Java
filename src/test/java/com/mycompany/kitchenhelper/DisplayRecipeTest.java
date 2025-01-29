@@ -45,7 +45,7 @@ public class DisplayRecipeTest {
 
     @Test
     public void testScalingAndCombiningIngredients() {
-        // for 2 peaople
+        // Масштабування рецепта на 2 осіб
         displayRecipe = new DisplayRecipe(recipe, 2);
 
         List<Ingredient> scaledIngredients = displayRecipe.scaleAndCombineIngredients(recipe.getIngredients(), 2);
@@ -57,7 +57,13 @@ public class DisplayRecipeTest {
         assertEquals(100.0, scaledIngredients.stream().filter(i -> i.getName().equalsIgnoreCase("Βούτυρο")).findFirst().get().getQuantity());
     }
 
+    @Test
+    public void testPrintRecipe() {
 
+        displayRecipe = new DisplayRecipe(recipe, 1);
+        
+        assertDoesNotThrow(() -> displayRecipe.printRecipe());
+    }
 
     @Test
     public void testScalingWithInvalidPeople() {

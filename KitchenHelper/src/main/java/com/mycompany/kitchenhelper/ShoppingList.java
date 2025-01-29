@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package com.mycompany.kitchenhelper;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,66 +10,66 @@ import java.util.Map;
  * required for multiple recipes.
  */
 public class ShoppingList {
-    private Map<String, List<Ingredient>> groupedIngredients; // Назва -> список інгредієнтів
+     private Map<String, List<Ingredient>> groupedIngredients; // Name + List of ingredients 
     private IngredientConverter converter;
 
-    // Constructor
     public ShoppingList() {
         this.groupedIngredients = new HashMap<>();
         this.converter = new IngredientConverter();
     }
 
-    // Add a recipe to the shopping list
-    public void addRecipe(Recipe recipe) {
-        for (Ingredient ingredient : recipe.getIngredients()) {
-            String ingredientName = ingredient.getName().toLowerCase();
+    public void addRecipe(Recipe recipe, int people) {
+    for (Ingredient ingredient : recipe.getIngredients()) {
+        String ingredientName = ingredient.getName().toLowerCase();
 
-            // if the ingridient has been added check if may be added
-            if (groupedIngredients.containsKey(ingredientName)) {
-                List<Ingredient> ingredientList = groupedIngredients.get(ingredientName);
-                boolean added = false;
+        // scale ingredients quantity
+        double scaledQuantity = ingredient.getQuantity() * people;
+        Ingredient scaledIngredient = new Ingredient(ingredient.getName(), scaledQuantity, ingredient.getUnit());
 
-                for (int i = 0; i < ingredientList.size(); i++) {
-                    Ingredient existingIngredient = ingredientList.get(i);
+        if (groupedIngredients.containsKey(ingredientName)) {
+            List<Ingredient> ingredientList = groupedIngredients.get(ingredientName);
+            boolean added = false;
 
-                    // try to combine
-                    Map<String, Double> combinedQuantities = converter.addQuantities(existingIngredient, ingredient);
+            for (int i = 0; i < ingredientList.size(); i++) {
+                Ingredient existingIngredient = ingredientList.get(i);
 
-                    if (combinedQuantities.size() == 1) { // if able to combine 
-                        for (Map.Entry<String, Double> entry : combinedQuantities.entrySet()) {
-                            ingredientList.set(i, new Ingredient(
-                                    existingIngredient.getName(),
-                                    entry.getValue(),
-                                    entry.getKey()
-                            ));
-                        }
-                        added = true;
-                        break;
+                Map<String, Double> combinedQuantities = converter.addQuantities(existingIngredient, scaledIngredient);
+
+                if (combinedQuantities.size() == 1) {
+                    for (Map.Entry<String, Double> entry : combinedQuantities.entrySet()) {
+                        ingredientList.set(i, new Ingredient(
+                                existingIngredient.getName(),
+                                entry.getValue(),
+                                entry.getKey()
+                        ));
                     }
+                    added = true;
+                    break;
                 }
-
-                if (!added) { // if combining failed -> just add to the list 
-                    ingredientList.add(ingredient);
-                }
-            } else {
-                // new ingredient in the group
-                List<Ingredient> newList = new ArrayList<>();
-                newList.add(ingredient);
-                groupedIngredients.put(ingredientName, newList);
             }
+
+            if (!added) {
+                ingredientList.add(scaledIngredient);
+            }
+        } else {
+            List<Ingredient> newList = new ArrayList<>();
+            newList.add(scaledIngredient);
+            groupedIngredients.put(ingredientName, newList);
         }
     }
+}
 
-    // Print the shopping list
-    public void printShoppingList() {
-        System.out.println("Shopping List:");
+
+    public List<String> toStringList() {
+        List<String> result = new ArrayList<>();
         for (Map.Entry<String, List<Ingredient>> entry : groupedIngredients.entrySet()) {
             for (Ingredient ingredient : entry.getValue()) {
-                System.out.printf("- %s: %.2f %s%n", 
-                    ingredient.getName(),
-                    ingredient.getQuantity(),
-                    "pieces".equals(ingredient.getUnit()) || "piece".equals(ingredient.getUnit()) ? "" : ingredient.getUnit());
+                result.add(String.format("%s: %.2f %s",
+                        ingredient.getName(),
+                        ingredient.getQuantity(),
+                        "pieces".equals(ingredient.getUnit()) || "piece".equals(ingredient.getUnit()) ? "" : ingredient.getUnit()));
             }
         }
+        return result;
     }
 }
